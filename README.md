@@ -34,7 +34,7 @@ ChronoSnap uses Google APIs for Drive, Calendar, and Tasks. The extension’s `m
 > }
 > ```
 >
-> Otherwise, your extension may use someone else’s API quota.
+> Otherwise, the extension may use someone else’s API quota.
 
 ### How to Download This Repo
 
