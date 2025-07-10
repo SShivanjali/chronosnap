@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChronoSnap</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>ChronoSnap</h1>
+  
+  <!-- Initial Sync Section -->
+  <div id="initialSync">
+    <button id="syncBtn">Sync Now</button>
+    <div id="syncStatus">Click "Sync Now" to load your events and files.</div>
+  </div>
+  
+  <!-- Search and Filter Section (hidden initially) -->
+  <div id="searchFilterSection" style="display: none;">
+    <!-- Combined Search and Dropdown Section -->
+    <div class="search-dropdown-section">
+      <div class="search-dropdown-container">
+        <input type="text" id="searchInput" placeholder="Search or select an event..." autocomplete="off" />
+        <div id="dropdownList" class="dropdown-list">
+          <!-- Options will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Date Range Section -->
+    <div class="date-range-section">
+      <label>Filter by Date Range:</label>
+      <div class="date-inputs">
+        <input type="date" id="startDate" />
+        <span>to</span>
+        <input type="date" id="endDate" />
+      </div>
+      <button id="dateFilterBtn">Filter by Date</button>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button id="showAllBtn">Show All Events</button>
+      <button id="clearBtn" class="secondary-btn">Clear Results</button>
+      <button id="reSyncBtn" class="secondary-btn">Re-sync</button>
+    </div>
+  </div>
+  
+  <div id="output"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

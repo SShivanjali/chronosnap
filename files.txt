@@ -1,0 +1,117 @@
+popup.js:
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const outputDiv = document.getElementById("output");
+  outputDiv.innerHTML = "<p>Fetching events...</p>";
+  console.log("🔄 Sync button clicked. Fetching events...");
+
+  chrome.runtime.sendMessage({ type: "GET_EVENTS" }, (response) => {
+    if (chrome.runtime.lastError) {
+      outputDiv.textContent = "Error: " + chrome.runtime.lastError.message;
+      console.error("❌ Error fetching events:", chrome.runtime.lastError.message);
+      return;
+    }
+
+    console.log("✅ Events response received:", response);
+
+    if (response && response.events) {
+      if (response.events.length === 0) {
+        outputDiv.innerHTML = "<p>No events found in the last 7 days.</p>";
+        console.log("ℹ️ No events found.");
+        return;
+      }
+
+      outputDiv.innerHTML = "<strong>Events:</strong>";
+      response.events.forEach(event => {
+        const div = document.createElement("div");
+        div.className = "event";
+        const formattedStart = event.start.replace("T", " ").replace("Z", "");
+        div.textContent = `${event.summary} (${formattedStart})`;
+        outputDiv.appendChild(div);
+      });
+      console.log(`📅 Displayed ${response.events.length} event(s).`);
+    } else {
+      outputDiv.innerHTML = "<p>No events found.</p>";
+      console.warn("⚠️ Event response invalid or empty.");
+    }
+
+    // Now fetch recent photos
+    console.log("📸 Fetching recent photos...");
+    // chrome.runtime.sendMessage({ type: "GET_PHOTOS" }, (photoRes) => {
+    //   console.log("📥 Photo response:", photoRes);
+
+    //   if (photoRes && photoRes.photos) {
+    //     outputDiv.innerHTML += "<hr><strong>Recent Photos:</strong>";
+    //     photoRes.photos.forEach(photo => {
+    //       const container = document.createElement("div");
+    //       container.className = "photo";
+
+    //       const img = document.createElement("img");
+    //       img.src = `${photo.baseUrl}=w100-h100`;
+    //       img.alt = "Photo";
+
+    //       const caption = document.createElement("div");
+    //       const formattedTime = photo.creationTime.replace("T", " ").replace("Z", "");
+    //       caption.textContent = `${photo.filename} (${formattedTime})`;
+
+    //       container.appendChild(img);
+    //       container.appendChild(caption);
+    //       outputDiv.appendChild(container);
+    //     });
+    //     console.log(`🖼️ Displayed ${photoRes.photos.length} photo(s).`);
+    //   } else {
+    //     outputDiv.innerHTML += "<p>No photos found.</p>";
+    //     console.warn("⚠️ No photos received.");
+    //   }
+    // });
+  
+chrome.runtime.sendMessage({ type: "GET_FILES" }, (fileRes) => {
+  console.log("📁 File response:", fileRes);
+
+  if (fileRes && fileRes.files) {
+    outputDiv.innerHTML += "<hr><strong>Recent Files (with Tags):</strong>";
+
+    fileRes.files.forEach(file => {
+      const fileTime = new Date(file.createdTime);
+      let matchedEvent = null;
+
+      response.events.forEach(event => {
+        const eventStart = new Date(event.start);
+        const eventEnd = new Date(event.end);
+
+        // Optional buffer window (e.g., ±15 mins)
+        const buffer = 15 * 60 * 1000;
+
+        if (
+          fileTime >= new Date(eventStart.getTime() - buffer) &&
+          fileTime <= new Date(eventEnd.getTime() + buffer)
+        ) {
+          matchedEvent = event.summary;
+        }
+      });
+
+      const container = document.createElement("div");
+      container.className = "file";
+
+      const link = document.createElement("a");
+      link.href = file.webViewLink;
+      link.target = "_blank";
+      link.textContent = `${file.name} (${file.modifiedTime.replace("T", " ").replace("Z", "")})`;
+
+      const tag = document.createElement("div");
+      tag.style.fontSize = "12px";
+      tag.style.color = matchedEvent ? "green" : "#999";
+      tag.textContent = matchedEvent ? `📌 Tag: ${matchedEvent}` : "No event match";
+
+      container.appendChild(link);
+      container.appendChild(tag);
+      outputDiv.appendChild(container);
+    });
+  } else {
+    outputDiv.innerHTML += "<p>No files found.</p>";
+    console.warn("⚠️ No files received.");
+  }
+});
+
+
+  });
+});

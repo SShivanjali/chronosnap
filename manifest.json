@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "ChronoSnap",
+  "version": "1.0",
+  "description": "Auto-tag Google Photos with Google Calendar events.",
+  "permissions": [
+    "identity",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "492041577476-f7ke1ca272fgjapbvvkjpt1ca72t2p1a.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/drive.file",
+      "https://www.googleapis.com/auth/drive.metadata.readonly",
+      "https://www.googleapis.com/auth/tasks.readonly"
+    ]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
